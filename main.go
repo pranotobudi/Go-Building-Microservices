@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/pranotobudi/Go-Building-Microservices/handlers"
 )
 
@@ -17,8 +18,18 @@ func main() {
 	// hh := handlers.NewHello(l)
 	// gh := handlers.NewGoodbye(l)
 	p := handlers.NewProducts(l)
-	sm := http.NewServeMux()
-	sm.Handle("/", p)
+	// sm := http.NewServeMux()
+	sm := mux.NewRouter()
+	getSubRouter := sm.Methods(http.MethodGet).Subrouter()
+	getSubRouter.HandleFunc("/", p.GetProducts)
+
+	putSubRouter := sm.Methods(http.MethodPut).Subrouter()
+	putSubRouter.HandleFunc("/{id:[0-9]+}", p.UpdateProduct)
+	putSubRouter.Use(p.MiddlewareProductValidation)
+
+	postSubRouter := sm.Methods(http.MethodPost).Subrouter()
+	postSubRouter.HandleFunc("/", p.AddProducts)
+	postSubRouter.Use(p.MiddlewareProductValidation)
 	// sm.Handle("/", hh)
 	// sm.Handle("/goodbye", gh)
 	// sm.Handle("/products", p)

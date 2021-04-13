@@ -10,7 +10,12 @@ import (
 	"github.com/go-playground/validator"
 )
 
+// swagger:model
 type Product struct {
+	// the id for this user
+	//
+	// required: true
+	// min: 1
 	ID          int     `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
@@ -61,6 +66,18 @@ func UpdateProduct(id int, p *Product) error {
 		return err
 	}
 	productList[idx] = p
+	return nil
+}
+
+func DeleteProduct(id int) error {
+	idx, err := findProduct(id)
+	if err != nil {
+		return err
+	}
+
+	copy(productList[idx:], productList[idx+1:])
+	productList[len(productList)-1] = &Product{}   // Erase last element (write zero value).
+	productList = productList[:len(productList)-1] // Truncate slice.
 	return nil
 }
 

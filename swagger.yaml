@@ -1,0 +1,74 @@
+basePath: /
+consumes:
+- Application/json
+definitions:
+  Product:
+    properties:
+      description:
+        type: string
+        x-go-name: Description
+      id:
+        description: the id for this user
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+      price:
+        format: float
+        type: number
+        x-go-name: Price
+      sku:
+        type: string
+        x-go-name: SKU
+    required:
+    - id
+    type: object
+    x-go-package: github.com/pranotobudi/Go-Building-Microservices/data
+info:
+  description: |-
+    Documentation for Product API
+
+    Scheme: http
+  title: of product API
+  version: 1.0.0
+paths:
+  /products:
+    get:
+      description: |-
+        Returns a list of products
+        response:
+        200: productsResponse
+      operationId: listProducts
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: |-
+        Returns a list of products
+        response:
+        201: noContent
+      operationId: deleteProduct
+      parameters:
+      - format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      tags:
+      - products
+produces:
+- application/json
+responses:
+  noContent:
+    description: ""
+  productsResponse:
+    description: A list of products return in the response
+    schema:
+      items:
+        $ref: '#/definitions/Product'
+      type: array
+swagger: "2.0"

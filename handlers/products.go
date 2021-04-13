@@ -1,3 +1,15 @@
+// Package classification of product API
+//
+// Documentation for Product API
+//
+// Scheme: http
+// BasePath: /
+// Version: 1.0.0
+// Consumes:
+// - Application/json
+// Produces:
+// - application/json
+// swagger:meta
 package handlers
 
 import (
@@ -12,6 +24,24 @@ import (
 	"github.com/pranotobudi/Go-Building-Microservices/data"
 )
 
+// A list of products return in the response
+// swagger:response productsResponse
+type productsResponse struct {
+	// All products in the system
+	// in: body
+	Body []data.Product
+}
+
+// swagger:response noContent
+type productNocontent struct {
+}
+
+// swagger:parameters deleteProduct
+type productIDParameterWrapper struct {
+	// in: path
+	// required:true
+	ID int `json:"id"`
+}
 type Products struct {
 	l *log.Logger
 }
@@ -60,18 +90,6 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	http.Error(rw, "ERROR METHOD", http.StatusMethodNotAllowed)
 	rw.WriteHeader(http.StatusMethodNotAllowed)
-}
-
-func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	lp := data.GetProducts()
-	err := lp.EncodeJSON(rw)
-	// jsonByte, err := json.Marshal(lp)
-	if err != nil {
-		http.Error(rw, "unable to encode json", http.StatusInternalServerError)
-	}
-	// rw.Write(jsonByte)
-	// enc := json.NewEncoder(rw)
-	// enc.Encode(lp)
 }
 
 func (p *Products) AddProducts(rw http.ResponseWriter, r *http.Request) {
